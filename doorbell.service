@@ -1,0 +1,32 @@
+# doorbell.service - Systemd unit file for Raspberry Pi Doorbell
+# 
+# NOTE:
+# - In 'ExecStart', replace '/home/pi/rpi-doorbell/doorbell.py' with the full path to your Python script.
+# - Also adjust the 'WorkingDirectory' accordingly.
+# - Replace 'pi' under 'User=' with your actual Linux username if different.
+# - Run 'id' to check if the UID 1000 is correct, if not, replace in 'Environment'.
+# - Save this file as '/etc/systemd/system/doorbell.service'
+# - Then run:
+#     sudo systemctl daemon-reload
+#     sudo systemctl enable doorbell.service
+#     sudo systemctl start doorbell.service
+# - Diagnose issues with:
+#     sudo systemctl status doorbell.service
+#     sudo journalctl -u doorbell.service --no-pager -n 50
+#     
+
+[Unit]
+Description=Raspberry Pi Doorbell Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/rpi-doorbell/doorbell.py
+WorkingDirectory=/home/pi/rpi-doorbell
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+Environment="XDG_RUNTIME_DIR=/run/user/1000"
+
+[Install]
+WantedBy=multi-user.target
